@@ -1,0 +1,362 @@
+/* 1. Variables & Configuration */
+/* Font Variables */
+/* 2. Global Resets & Fonts */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Mali", cursive;
+}
+
+/* Ensure inputs/buttons inherit the correct font */
+input, textarea, button, select {
+  font-family: "Mali", cursive;
+}
+
+body {
+  background-color: #f0f2f5;
+  color: #2d3436;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Headers Font Override */
+h1, h2, h3 {
+  font-family: "Prompt", sans-serif;
+}
+
+/* 3. Main Layout */
+.app-container {
+  width: 100%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+.app-container header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.app-container header h1 {
+  color: #6c5ce7;
+  font-size: 1.5rem;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+/* 4. Buttons */
+button, .btn-secondary, .btn-primary, .btn-danger {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: 0.2s;
+  font-size: 0.9rem;
+  font-family: "Prompt", sans-serif; /* Better readability for buttons */
+}
+
+.btn-secondary {
+  background: #dfe6e9;
+  color: #2d3436;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-secondary:hover {
+  background: rgb(192.7777777778, 206.3888888889, 212.2222222222);
+}
+
+.btn-primary {
+  background: #6c5ce7;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: rgb(67.9090909091, 47.5454545455, 224.4545454545);
+}
+
+.btn-danger {
+  background: #ff7675;
+  color: white;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-danger:hover {
+  background: #d63031;
+}
+
+/* 5. Calendar */
+.calendar-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  /* New Selector Styling */
+}
+.calendar-nav button {
+  background: transparent;
+  font-size: 1.2rem;
+  color: #6c5ce7;
+  padding: 5px 10px;
+}
+.calendar-nav button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+}
+.calendar-nav .nav-selectors {
+  display: flex;
+  gap: 10px;
+}
+.calendar-nav .nav-selectors select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; /* Removes default ugly browser arrow */
+  border: none;
+  background: transparent;
+  font-size: 1.5rem; /* Matches your old H2 size */
+  font-weight: bold;
+  color: #2d3436;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-family: "Prompt", sans-serif; /* Uses the clean Prompt font */
+  text-align: center;
+}
+.calendar-nav .nav-selectors select:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #6c5ce7;
+}
+.calendar-nav .nav-selectors select:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+.calendar-grid .day {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+  position: relative;
+  font-weight: bold;
+}
+.calendar-grid .day:hover {
+  background: #a29bfe;
+  color: #ffffff;
+}
+.calendar-grid .day.today {
+  border: 2px solid #6c5ce7;
+}
+.calendar-grid .day.has-entry::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: #6c5ce7;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 8px;
+}
+.calendar-grid .day.empty {
+  background: transparent;
+  cursor: default;
+}
+
+/* 6. Modal & Diary Entry */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+  z-index: 100;
+}
+.modal.active {
+  display: flex;
+}
+.modal .modal-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 900px;
+  /* Enables the main window scrolling */
+  height: auto;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  /* Custom Scrollbar */
+}
+.modal .modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+.modal .modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal .modal-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+.modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal .modal-header .close-btn {
+  background: none;
+  font-size: 1.5rem;
+}
+.modal .diary-split {
+  display: flex;
+  gap: 20px;
+  height: auto;
+  margin-bottom: 20px;
+  align-items: stretch; /* Keeps bg colors even, but allows growth */
+}
+@media (max-width: 600px) {
+  .modal .diary-split {
+    flex-direction: column;
+  }
+}
+.modal .diary-split .person-section {
+  flex: 1;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: auto;
+  min-height: 300px;
+  /* --- TEXTAREA UPDATE --- */
+}
+.modal .diary-split .person-section.person-a {
+  background: #e3f2fd;
+}
+.modal .diary-split .person-section.person-b {
+  background: #f3e5f5;
+}
+.modal .diary-split .person-section .person-header {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #555;
+}
+.modal .diary-split .person-section textarea {
+  width: 100%;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 15px;
+  border-radius: 12px;
+  /* FIX: Remove flex:1 so it doesn't fight the auto-height. 
+     Set resize to vertical so user can drag it down. */
+  height: auto;
+  min-height: 120px;
+  resize: vertical;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.modal .diary-split .person-section textarea:focus {
+  outline: 2px solid #6c5ce7;
+}
+.modal .diary-split .person-section .image-upload label {
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #666;
+  display: block;
+  margin-bottom: 10px;
+}
+.modal .modal-footer {
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between; /* Pushes Delete to left, Save to right */
+  align-items: center;
+}
+
+/* 7. Masonry Grid (Images) */
+.masonry-grid {
+  -moz-column-count: 2;
+       column-count: 2;
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+  width: 100%;
+  margin-top: 5px;
+  padding-bottom: 10px;
+}
+.masonry-grid .img-card {
+  -moz-column-break-inside: avoid;
+       break-inside: avoid;
+  margin-bottom: 10px;
+  position: relative;
+}
+.masonry-grid .img-card img {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.masonry-grid .img-card .delete-img-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: 0.2s;
+}
+.masonry-grid .img-card .delete-img-btn:hover {
+  background: red;
+}
+
+#todayBtn {
+  background: #ffffff;
+  border: 1px solid #6c5ce7;
+  color: #6c5ce7;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+#todayBtn:hover {
+  background: #6c5ce7;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+#todayBtn i {
+  margin-right: 5px;
+}/*# sourceMappingURL=style.css.map */

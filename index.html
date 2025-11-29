@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌บันทึกของ P + T</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;400;600&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1><i class="fa-solid fa-book-open"></i> การเดินทางของเรา</h1>
+            <div class="controls" style="display: flex;"> 
+                <button id="todayBtn" class="btn-secondary">
+                    <i class="fa-solid fa-calendar-day"></i> Today
+                </button>
+            </div>
+        </header>
+
+        <div class="calendar-nav">
+            <button id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+            
+            <div class="nav-selectors">
+                <select id="monthSelect"></select>
+                <select id="yearSelect"></select>
+            </div>
+
+            <button id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="calendar-grid" id="calendar"></div>
+    </div>
+
+    <div class="modal" id="entryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="selectedDateDisplay">Date</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="diary-split">
+                <div class="person-section person-a">
+                    <div class="person-header">
+                        <i class="fa-regular fa-chess-king"></i> <span>โปรด</span>
+                    </div>
+                    <textarea id="textA" placeholder="How was your day, Prod?"></textarea>
+                    <div class="image-upload">
+                        <label for="imgInputA"><i class="fa-solid fa-images"></i> Add Images</label>
+                        <input type="file" id="imgInputA" accept="image/*" multiple hidden>
+                        <div class="masonry-grid" id="previewA"></div>
+                    </div>
+                </div>
+
+                <div class="person-section person-b">
+                    <div class="person-header">
+                       <i class="fa-regular fa-chess-queen"></i> <span>คุณเตื้อง</span>
+                    </div>
+                    <textarea id="textB" placeholder="What's on your mind, Turng?"></textarea>
+                    <div class="image-upload">
+                        <label for="imgInputB"><i class="fa-solid fa-images"></i> Add Images</label>
+                        <input type="file" id="imgInputB" accept="image/*" multiple hidden>
+                        <div class="masonry-grid" id="previewB"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="deleteBtn" class="btn-danger">
+                    <i class="fa-solid fa-trash"></i> ล้างข้อมูล
+                </button>
+                <button id="saveBtn" class="btn-primary"><i class="fa-regular fa-floppy-disk"></i> บันทึก</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        // TODO: Replace the following with YOUR app's Firebase project configuration
+        // (Copy this object from the Firebase Console -> Project Settings)
+       const firebaseConfig = {
+            apiKey: "AIzaSyDJjP28ZAWvD0Ev4gTJPpP3TpG1WA_ZecE",
+            authDomain: "our-journal-ffcb8.firebaseapp.com",
+            databaseURL: "https://our-journal-ffcb8-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "our-journal-ffcb8",
+            storageBucket: "our-journal-ffcb8.firebasestorage.app",
+            messagingSenderId: "862331165540",
+            appId: "1:862331165540:web:c507da1a6cbf3ef5263871"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Make db functions available to your app.js logic
+        window.db = db;
+        window.dbRef = ref;
+        window.dbSet = set;
+        window.dbOnValue = onValue;
+        
+        // Dispatch event to let app.js know Firebase is ready
+        window.dispatchEvent(new Event('firebase-ready'));
+    </script>
+    <script src="app.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,334 @@
+/* 1. Variables & Configuration */
+$bg-color: #f0f2f5;
+$primary: #6c5ce7;
+$secondary: #a29bfe;
+$white: #ffffff;
+$text: #2d3436;
+$gray: #dfe6e9;
+$person-a-color: #e3f2fd; 
+$person-b-color: #f3e5f5; 
+$danger-color: #ff7675;
+$danger-hover: #d63031;
+
+/* Font Variables */
+$font-main: 'Mali', cursive;   
+$font-ui: 'Prompt', sans-serif;
+
+/* 2. Global Resets & Fonts */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: $font-main; 
+}
+
+/* Ensure inputs/buttons inherit the correct font */
+input, textarea, button, select {
+    font-family: $font-main;
+}
+
+body {
+    background-color: $bg-color;
+    color: $text;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Headers Font Override */
+h1, h2, h3 {
+    font-family: $font-ui; 
+}
+
+/* 3. Main Layout */
+.app-container {
+    width: 100%;
+    max-width: 900px;
+    background: $white;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    padding: 30px;
+    
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        h1 { color: $primary; font-size: 1.5rem; }
+    }
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+/* 4. Buttons */
+button, .btn-secondary, .btn-primary, .btn-danger {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: 0.2s;
+    font-size: 0.9rem;
+    font-family: $font-ui; /* Better readability for buttons */
+}
+
+.btn-secondary { background: $gray; color: $text; display: inline-flex; align-items: center; gap: 5px; }
+.btn-secondary:hover { background: darken($gray, 10%); }
+
+.btn-primary { background: $primary; color: $white; font-weight: bold; }
+.btn-primary:hover { background: darken($primary, 10%); }
+
+.btn-danger {
+    background: $danger-color;
+    color: white;
+    font-weight: bold;
+    display: inline-flex; align-items: center; gap: 5px;
+    &:hover { background: $danger-hover; }
+}
+
+/* 5. Calendar */
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    
+    button { 
+        background: transparent; 
+        font-size: 1.2rem; 
+        color: $primary; 
+        padding: 5px 10px;
+        
+        &:hover { background: rgba(0,0,0,0.05); border-radius: 50%; }
+    }
+
+    /* New Selector Styling */
+    .nav-selectors {
+        display: flex;
+        gap: 10px;
+
+        select {
+            appearance: none; /* Removes default ugly browser arrow */
+            border: none;
+            background: transparent;
+            font-size: 1.5rem; /* Matches your old H2 size */
+            font-weight: bold;
+            color: $text;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-family: $font-ui; /* Uses the clean Prompt font */
+            text-align: center;
+
+            &:hover {
+                background: rgba(0,0,0,0.05);
+                color: $primary;
+            }
+
+            &:focus {
+                outline: none;
+                background: rgba(0,0,0,0.05);
+            }
+        }
+    }
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+
+    .day {
+        aspect-ratio: 1;
+        border-radius: 12px;
+        background: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.2s;
+        position: relative;
+        font-weight: bold;
+
+        &:hover { background: $secondary; color: $white; }
+        &.today { border: 2px solid $primary; }
+        &.has-entry::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: $primary;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 8px;
+        }
+        &.empty { background: transparent; cursor: default; }
+    }
+}
+
+/* 6. Modal & Diary Entry */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    z-index: 100;
+
+    &.active { display: flex; }
+
+   .modal-content {
+        background: $white;
+        width: 90%;
+        max-width: 900px;
+        
+        /* Enables the main window scrolling */
+        height: auto; 
+        max-height: 90vh; 
+        overflow-y: auto; 
+        
+        border-radius: 20px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+
+        /* Custom Scrollbar */
+        &::-webkit-scrollbar { width: 8px; }
+        &::-webkit-scrollbar-track { background: transparent; }
+        &::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.1); border-radius: 4px; }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        .close-btn { background: none; font-size: 1.5rem; }
+    }
+
+    .diary-split {
+        display: flex;
+        gap: 20px;
+        height: auto; 
+        margin-bottom: 20px;
+        align-items: stretch; /* Keeps bg colors even, but allows growth */
+
+        @media (max-width: 600px) { flex-direction: column; }
+
+        .person-section {
+            flex: 1;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: auto; 
+            min-height: 300px;
+
+            &.person-a { background: $person-a-color; }
+            &.person-b { background: $person-b-color; }
+
+            .person-header {
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #555;
+            }
+
+            /* --- TEXTAREA UPDATE --- */
+            textarea {
+                width: 100%;
+                border: none;
+                background: rgba(255,255,255,0.6);
+                padding: 15px;
+                border-radius: 12px;
+                
+                /* FIX: Remove flex:1 so it doesn't fight the auto-height. 
+                   Set resize to vertical so user can drag it down. */
+                height: auto;
+                min-height: 120px;
+                resize: vertical; 
+                
+                font-size: 1.1rem;
+                line-height: 1.6;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+
+                &:focus { outline: 2px solid $primary; }
+            }
+
+            .image-upload {
+                label { font-size: 0.8rem; cursor: pointer; color: #666; display: block; margin-bottom: 10px;}
+            }
+        }
+    }
+    
+    .modal-footer {
+        padding-top: 20px;
+        display: flex;
+        justify-content: space-between; /* Pushes Delete to left, Save to right */
+        align-items: center;
+    }
+}
+
+/* 7. Masonry Grid (Images) */
+.masonry-grid {
+    column-count: 2; 
+    column-gap: 10px;
+    width: 100%;
+    margin-top: 5px;
+    padding-bottom: 10px;
+    
+    .img-card {
+        break-inside: avoid;
+        margin-bottom: 10px;
+        position: relative;
+        
+        img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .delete-img-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: 0.2s;
+
+            &:hover { background: red; }
+        }
+    }
+}
+
+#todayBtn {
+    background: #ffffff;
+    border: 1px solid $primary;
+    color: $primary;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+    &:hover {
+        background: $primary;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    i { margin-right: 5px; }
+}
