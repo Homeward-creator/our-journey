@@ -1,11 +1,53 @@
-/* 1. Variables & Configuration */
-/* Font Variables */
-/* 2. Global Resets & Fonts */
+/* =========================================
+   1. VARIABLES & CONFIGURATION
+   ========================================= */
+/* CSS Variables (The magic behind Dark Mode) */
+:root {
+  /* Light Mode (Default) */
+  --bg-body: #f0f2f5;
+  --bg-card: #ffffff;
+  --bg-input: rgba(255, 255, 255, 0.6);
+  --bg-hover: #f8f9fa;
+  --text-main: #2d3436;
+  --text-muted: #636e72;
+  --primary: #6c5ce7;
+  --secondary: #a29bfe;
+  --gray-btn: #dfe6e9;
+  /* Person Specific Colors */
+  --person-a-bg: #e3f2fd; /* Light Blue */
+  --person-b-bg: #f3e5f5; /* Light Purple */
+  /* Shadows */
+  --shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Dark Mode Overrides */
+body.dark-mode {
+  --bg-body: #18191a; /* Very Dark Grey */
+  --bg-card: #242526; /* Dark Grey Card */
+  --bg-input: rgba(0, 0, 0, 0.3); /* Dark transparent input */
+  --bg-hover: #3a3b3c;
+  --text-main: #e4e6eb; /* Off-white text */
+  --text-muted: #b0b3b8;
+  --primary: #8e7bf8; /* Lighter purple for dark bg */
+  --secondary: #6c5ce7;
+  --gray-btn: #3a3b3c; /* Dark btn background */
+  /* Person Colors - Darker/Desaturated for eye comfort */
+  --person-a-bg: #1e3a5f; /* Navy Blue */
+  --person-b-bg: #4a2c58; /* Deep Purple */
+  --shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* Static SCSS Variables (For internal logic) */
+/* =========================================
+   2. GLOBAL RESETS
+   ========================================= */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: "Mali", cursive;
+  /* Smooth transition for theme switching */
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Ensure inputs/buttons inherit the correct font */
@@ -14,26 +56,28 @@ input, textarea, button, select {
 }
 
 body {
-  background-color: #f0f2f5;
-  color: #2d3436;
+  background-color: var(--bg-body);
+  color: var(--text-main);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   padding: 20px;
 }
 
-/* Headers Font Override */
 h1, h2, h3 {
   font-family: "Prompt", sans-serif;
+  color: var(--text-main);
 }
 
-/* 3. Main Layout */
+/* =========================================
+   3. APP CONTAINER & HEADER
+   ========================================= */
 .app-container {
   width: 100%;
   max-width: 900px;
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   padding: 30px;
 }
 .app-container header {
@@ -43,7 +87,7 @@ h1, h2, h3 {
   margin-bottom: 30px;
 }
 .app-container header h1 {
-  color: #6c5ce7;
+  color: var(--primary);
   font-size: 1.5rem;
 }
 
@@ -52,7 +96,9 @@ h1, h2, h3 {
   gap: 10px;
 }
 
-/* 4. Buttons */
+/* =========================================
+   4. BUTTONS
+   ========================================= */
 button, .btn-secondary, .btn-primary, .btn-danger {
   cursor: pointer;
   border: none;
@@ -60,29 +106,38 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   padding: 8px 16px;
   transition: 0.2s;
   font-size: 0.9rem;
-  font-family: "Prompt", sans-serif; /* Better readability for buttons */
+  font-family: "Prompt", sans-serif;
 }
 
 .btn-secondary {
-  background: #dfe6e9;
-  color: #2d3436;
+  background: var(--gray-btn);
+  color: var(--text-main);
   display: inline-flex;
   align-items: center;
   gap: 5px;
 }
-
 .btn-secondary:hover {
-  background: rgb(192.7777777778, 206.3888888889, 212.2222222222);
+  filter: brightness(0.9);
 }
 
 .btn-primary {
-  background: #6c5ce7;
+  background: var(--primary);
   color: #ffffff;
   font-weight: bold;
+  /* Disabled State */
 }
-
 .btn-primary:hover {
-  background: rgb(67.9090909091, 47.5454545455, 224.4545454545);
+  filter: brightness(1.1);
+}
+.btn-primary:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+.btn-primary:disabled:hover {
+  background-color: #bdc3c7;
 }
 
 .btn-danger {
@@ -97,22 +152,135 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   background: #d63031;
 }
 
-/* 5. Calendar */
+/* Today Button Specifics */
+#todayBtn {
+  background: var(--bg-card);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-weight: bold;
+}
+#todayBtn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* =========================================
+   5. MEMORY SECTION
+   ========================================= */
+.memory-section {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  animation: fadeIn 0.5s ease-in-out;
+}
+.memory-section .memory-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.memory-section .memory-header-row h3 {
+  color: var(--primary);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.memory-section .memory-header-row h3 span {
+  font-weight: normal;
+  color: var(--text-main);
+  font-size: 0.9rem;
+}
+.memory-section .memory-card {
+  display: flex;
+  gap: 15px;
+}
+@media (max-width: 600px) {
+  .memory-section .memory-card {
+    flex-direction: column;
+  }
+}
+.memory-section .memory-card .mem-person {
+  flex: 1;
+  /* Note: We use specific vars for memory cards */
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 0.9rem;
+}
+.memory-section .memory-card .mem-person.person-a {
+  background: var(--person-a-bg);
+}
+.memory-section .memory-card .mem-person.person-b {
+  background: var(--person-b-bg);
+}
+.memory-section .memory-card .mem-person .mem-tag {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+.memory-section .memory-card .mem-person p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+  color: var(--text-main);
+  white-space: pre-wrap;
+}
+.memory-section .mem-imgs-grid {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+.memory-section .mem-imgs-grid img {
+  height: 80px;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+  cursor: pointer;
+}
+.memory-section .mem-imgs-grid img:hover {
+  transform: scale(1.05);
+}
+.memory-section .mem-imgs-grid::-webkit-scrollbar {
+  height: 4px;
+}
+.memory-section .mem-imgs-grid::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 2px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =========================================
+   6. CALENDAR
+   ========================================= */
 .calendar-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  /* New Selector Styling */
 }
 .calendar-nav button {
   background: transparent;
   font-size: 1.2rem;
-  color: #6c5ce7;
+  color: var(--primary);
   padding: 5px 10px;
 }
 .calendar-nav button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--bg-hover);
   border-radius: 50%;
 }
 .calendar-nav .nav-selectors {
@@ -122,25 +290,27 @@ button, .btn-secondary, .btn-primary, .btn-danger {
 .calendar-nav .nav-selectors select {
   -webkit-appearance: none;
      -moz-appearance: none;
-          appearance: none; /* Removes default ugly browser arrow */
+          appearance: none;
   border: none;
   background: transparent;
-  font-size: 1.5rem; /* Matches your old H2 size */
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #2d3436;
+  color: var(--text-main);
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 8px;
-  font-family: "Prompt", sans-serif; /* Uses the clean Prompt font */
+  font-family: "Prompt", sans-serif;
   text-align: center;
+  /* Ensure dropdown options have correct background in dark mode */
 }
-.calendar-nav .nav-selectors select:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #6c5ce7;
-}
-.calendar-nav .nav-selectors select:focus {
+.calendar-nav .nav-selectors select:hover, .calendar-nav .nav-selectors select:focus {
+  background: var(--bg-hover);
+  color: var(--primary);
   outline: none;
-  background: rgba(0, 0, 0, 0.05);
+}
+.calendar-nav .nav-selectors select option {
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
 .calendar-grid {
@@ -151,7 +321,8 @@ button, .btn-secondary, .btn-primary, .btn-danger {
 .calendar-grid .day {
   aspect-ratio: 1;
   border-radius: 12px;
-  background: #f8f9fa;
+  background: var(--bg-hover);
+  color: var(--text-main);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -162,17 +333,17 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   font-weight: bold;
 }
 .calendar-grid .day:hover {
-  background: #a29bfe;
-  color: #ffffff;
+  background: var(--secondary);
+  color: #fff;
 }
 .calendar-grid .day.today {
-  border: 2px solid #6c5ce7;
+  border: 2px solid var(--primary);
 }
 .calendar-grid .day.has-entry::after {
   content: "";
   width: 6px;
   height: 6px;
-  background: #6c5ce7;
+  background: var(--primary);
   border-radius: 50%;
   position: absolute;
   bottom: 8px;
@@ -182,7 +353,9 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   cursor: default;
 }
 
-/* 6. Modal & Diary Entry */
+/* =========================================
+   7. MODAL & DIARY ENTRY
+   ========================================= */
 .modal {
   position: fixed;
   top: 0;
@@ -201,10 +374,10 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   display: flex;
 }
 .modal .modal-content {
-  background: #ffffff;
+  background: var(--bg-card);
+  color: var(--text-main);
   width: 90%;
   max-width: 900px;
-  /* Enables the main window scrolling */
   height: auto;
   max-height: 90vh;
   overflow-y: auto;
@@ -212,7 +385,6 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   padding: 30px;
   display: flex;
   flex-direction: column;
-  /* Custom Scrollbar */
 }
 .modal .modal-content::-webkit-scrollbar {
   width: 8px;
@@ -232,13 +404,17 @@ button, .btn-secondary, .btn-primary, .btn-danger {
 .modal .modal-header .close-btn {
   background: none;
   font-size: 1.5rem;
+  color: var(--text-main);
+}
+.modal .modal-header .close-btn:hover {
+  color: #ff7675;
 }
 .modal .diary-split {
   display: flex;
   gap: 20px;
   height: auto;
   margin-bottom: 20px;
-  align-items: stretch; /* Keeps bg colors even, but allows growth */
+  align-items: stretch;
 }
 @media (max-width: 600px) {
   .modal .diary-split {
@@ -254,29 +430,28 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   gap: 15px;
   height: auto;
   min-height: 300px;
-  /* --- TEXTAREA UPDATE --- */
 }
 .modal .diary-split .person-section.person-a {
-  background: #e3f2fd;
+  background: var(--person-a-bg);
 }
 .modal .diary-split .person-section.person-b {
-  background: #f3e5f5;
+  background: var(--person-b-bg);
 }
 .modal .diary-split .person-section .person-header {
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #555;
+  color: var(--text-main);
+  opacity: 0.8;
 }
 .modal .diary-split .person-section textarea {
   width: 100%;
   border: none;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--bg-input);
+  color: var(--text-main);
   padding: 15px;
   border-radius: 12px;
-  /* FIX: Remove flex:1 so it doesn't fight the auto-height. 
-     Set resize to vertical so user can drag it down. */
   height: auto;
   min-height: 120px;
   resize: vertical;
@@ -285,23 +460,35 @@ button, .btn-secondary, .btn-primary, .btn-danger {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 .modal .diary-split .person-section textarea:focus {
-  outline: 2px solid #6c5ce7;
+  outline: 2px solid var(--primary);
+  background: var(--bg-card);
+}
+.modal .diary-split .person-section textarea::-moz-placeholder {
+  color: var(--text-muted);
+}
+.modal .diary-split .person-section textarea::placeholder {
+  color: var(--text-muted);
 }
 .modal .diary-split .person-section .image-upload label {
   font-size: 0.8rem;
   cursor: pointer;
-  color: #666;
+  color: var(--text-muted);
   display: block;
   margin-bottom: 10px;
+}
+.modal .diary-split .person-section .image-upload label:hover {
+  color: var(--primary);
 }
 .modal .modal-footer {
   padding-top: 20px;
   display: flex;
-  justify-content: space-between; /* Pushes Delete to left, Save to right */
+  justify-content: space-between;
   align-items: center;
 }
 
-/* 7. Masonry Grid (Images) */
+/* =========================================
+   8. MASONRY GRID (IMAGES)
+   ========================================= */
 .masonry-grid {
   -moz-column-count: 2;
        column-count: 2;
@@ -342,21 +529,4 @@ button, .btn-secondary, .btn-primary, .btn-danger {
 }
 .masonry-grid .img-card .delete-img-btn:hover {
   background: red;
-}
-
-#todayBtn {
-  background: #ffffff;
-  border: 1px solid #6c5ce7;
-  color: #6c5ce7;
-  font-weight: bold;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-#todayBtn:hover {
-  background: #6c5ce7;
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-#todayBtn i {
-  margin-right: 5px;
 }/*# sourceMappingURL=style.css.map */

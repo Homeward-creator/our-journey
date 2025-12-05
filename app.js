@@ -37,7 +37,86 @@ window.addEventListener('firebase-ready', () => {
                 loadEntryData(state.selectedDateStr);
             }
         }
+
+        if (memorySection.style.display === 'none') {
+             renderRandomMemory();
+        }
     });
+});
+
+// --- Memory Lane Logic ---
+
+const memorySection = document.getElementById('memorySection');
+const memDateDisplay = document.getElementById('memDateDisplay');
+const memTextA = document.getElementById('memTextA');
+const memTextB = document.getElementById('memTextB');
+const memImgsA = document.getElementById('memImgsA');
+const memImgsB = document.getElementById('memImgsB');
+const shuffleMemBtn = document.getElementById('shuffleMemBtn');
+
+function renderRandomMemory() {
+    const dates = Object.keys(state.data);
+    
+    // 1. Filter for dates that actually have content
+    const validDates = dates.filter(dateKey => {
+        const entry = state.data[dateKey];
+        if (!entry) return false;
+        
+        const hasText = (entry.personA?.text?.trim() || '') !== '' || (entry.personB?.text?.trim() || '') !== '';
+        const hasImgs = (entry.personA?.images?.length > 0) || (entry.personB?.images?.length > 0);
+        
+        return hasText || hasImgs;
+    });
+
+    if (validDates.length === 0) {
+        memorySection.style.display = 'none';
+        return;
+    }
+
+    // 2. Pick a random date
+    const randomDateKey = validDates[Math.floor(Math.random() * validDates.length)];
+    const entry = state.data[randomDateKey];
+
+    // 3. Render it
+    memorySection.style.display = 'block';
+    
+    // Format Date (Thai format looks nice here)
+    const dateObj = new Date(randomDateKey);
+    memDateDisplay.innerText = `(${dateObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' })})`;
+
+    // Person A Content
+    memTextA.innerText = entry.personA?.text || "- ไม่ได้บันทึกข้อความ -";
+    renderMemImages(memImgsA, entry.personA?.images || []);
+
+    // Person B Content
+    memTextB.innerText = entry.personB?.text || "- ไม่ได้บันทึกข้อความ -";
+    renderMemImages(memImgsB, entry.personB?.images || []);
+}
+
+function renderMemImages(container, images) {
+    container.innerHTML = '';
+    if (!images || images.length === 0) return;
+
+    images.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        // Optional: Click to view full size (reuses your modal logic roughly)
+        img.onclick = () => {
+             const newWin = window.open("");
+             newWin.document.write(`<img src="${src}" style="width:100%">`);
+        };
+        container.appendChild(img);
+    });
+}
+
+// Button Listener
+shuffleMemBtn.addEventListener('click', () => {
+    // Add a little spin animation class
+    const icon = shuffleMemBtn.querySelector('i');
+    icon.classList.add('fa-spin');
+    setTimeout(() => icon.classList.remove('fa-spin'), 500);
+    
+    renderRandomMemory();
 });
 
 // --- Calendar Logic ---
@@ -137,6 +216,31 @@ document.getElementById('nextBtn').addEventListener('click', () => {
 
 // --- Modal & Data Logic ---
 
+// --- Validation Logic ---
+
+const saveBtn = document.getElementById('saveBtn');
+
+function validateEntry() {
+    // Check if Person A has content
+    const hasContentA = textA.value.trim().length > 0 || tempImgsA.length > 0;
+    
+    // Check if Person B has content
+    const hasContentB = textB.value.trim().length > 0 || tempImgsB.length > 0;
+
+    // Logic: Enable only if AT LEAST ONE person has written something or added an image
+    if (hasContentA || hasContentB) {
+        saveBtn.disabled = false;
+        saveBtn.innerText = "บันทึก";
+    } else {
+        saveBtn.disabled = true;
+        saveBtn.innerText = "ไม่มีข้อมูล"; // Optional: Change text to show why
+    }
+}
+
+// Add 'input' listeners to text areas so it checks while typing
+textA.addEventListener('input', validateEntry);
+textB.addEventListener('input', validateEntry);
+
 function openModal(dateKey) {
     state.selectedDateStr = dateKey;
     selectedDateDisplay.innerText = new Date(dateKey).toDateString();
@@ -159,6 +263,8 @@ function loadEntryData(dateKey) {
     
     renderImages(previewA, tempImgsA, 'A');
     renderImages(previewB, tempImgsB, 'B');
+
+    validateEntry();
 }
 
 function renderImages(container, imageArray, personId) {
@@ -179,6 +285,8 @@ function renderImages(container, imageArray, personId) {
         div.appendChild(deleteBtn);
         container.appendChild(div);
     });
+
+    validateEntry();
 }
 
 function removeImage(index, personId) {
@@ -285,6 +393,8 @@ document.getElementById('deleteBtn').addEventListener('click', () => {
                 renderImages(previewA, [], 'A');
                 renderImages(previewB, [], 'B');
 
+                validateEntry();
+
                 // 4. Close modal and notify
                 modal.classList.remove('active');
                 // The onValue listener will automatically update the calendar dots
@@ -307,3 +417,38 @@ document.getElementById('todayBtn').addEventListener('click', () => {
     // 3. Visual feedback (Optional: shake animation or alert)
     // You'll see the dropdowns automatically update to the current month/year
 });
+
+// --- Dark Mode Logic ---
+
+const themeBtn = document.getElementById('themeToggleBtn');
+const body = document.body;
+const themeIcon = themeBtn.querySelector('i');
+
+// 1. Check LocalStorage on Load
+const savedTheme = localStorage.getItem('journalTheme');
+if (savedTheme === 'dark') {
+    enableDarkMode();
+}
+
+// 2. Toggle Function
+themeBtn.addEventListener('click', () => {
+    if (body.classList.contains('dark-mode')) {
+        disableDarkMode();
+    } else {
+        enableDarkMode();
+    }
+});
+
+function enableDarkMode() {
+    body.classList.add('dark-mode');
+    themeIcon.classList.remove('fa-moon');
+    themeIcon.classList.add('fa-sun'); // Change icon to Sun
+    localStorage.setItem('journalTheme', 'dark');
+}
+
+function disableDarkMode() {
+    body.classList.remove('dark-mode');
+    themeIcon.classList.remove('fa-sun');
+    themeIcon.classList.add('fa-moon'); // Change icon to Moon
+    localStorage.setItem('journalTheme', 'light');
+}

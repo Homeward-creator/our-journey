@@ -16,11 +16,35 @@
         <header>
             <h1><i class="fa-solid fa-book-open"></i> การเดินทางของเรา</h1>
             <div class="controls" style="display: flex;"> 
+                <button id="themeToggleBtn" class="btn-secondary" title="Switch Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
                 <button id="todayBtn" class="btn-secondary">
                     <i class="fa-solid fa-calendar-day"></i> Today
                 </button>
             </div>
         </header>
+
+        <div id="memorySection" class="memory-section" style="display: none;">
+            <div class="memory-header-row">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> ความทรงจำวันนั้น... <span id="memDateDisplay"></span></h3>
+                <button id="shuffleMemBtn" class="btn-secondary" title="สุ่มใหม่"><i class="fa-solid fa-shuffle"></i></button>
+            </div>
+            
+            <div class="memory-card">
+                <div class="mem-person person-a">
+                    <div class="mem-tag"> <img src="images/fox.png" style="width: 20px; height: 20px;"> โปรด</div>
+                    <p id="memTextA"></p>
+                    <div id="memImgsA" class="mem-imgs-grid"></div>
+                </div>
+
+                <div class="mem-person person-b">
+                    <div class="mem-tag"> <img src="images/penguin.png" style="width: 20px; height: 20px;"> คุณเตื้อง</div>
+                    <p id="memTextB"></p>
+                    <div id="memImgsB" class="mem-imgs-grid"></div>
+                </div>
+            </div>
+        </div>
 
         <div class="calendar-nav">
             <button id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
