@@ -1,25 +1,63 @@
-/* 1. Variables & Configuration */
-$bg-color: #f0f2f5;
-$primary: #6c5ce7;
-$secondary: #a29bfe;
-$white: #ffffff;
-$text: #2d3436;
-$gray: #dfe6e9;
-$person-a-color: #e3f2fd; 
-$person-b-color: #f3e5f5; 
+/* =========================================
+   1. VARIABLES & CONFIGURATION
+   ========================================= */
+
+/* CSS Variables (The magic behind Dark Mode) */
+:root {
+    /* Light Mode (Default) */
+    --bg-body: #f0f2f5;
+    --bg-card: #ffffff;
+    --bg-input: rgba(255, 255, 255, 0.6);
+    --bg-hover: #f8f9fa;
+    --text-main: #2d3436;
+    --text-muted: #636e72;
+    --primary: #6c5ce7;
+    --secondary: #a29bfe;
+    --gray-btn: #dfe6e9;
+    
+    /* Person Specific Colors */
+    --person-a-bg: #e3f2fd; /* Light Blue */
+    --person-b-bg: #f3e5f5; /* Light Purple */
+    
+    /* Shadows */
+    --shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Dark Mode Overrides */
+body.dark-mode {
+    --bg-body: #18191a;         /* Very Dark Grey */
+    --bg-card: #242526;         /* Dark Grey Card */
+    --bg-input: rgba(0, 0, 0, 0.3); /* Dark transparent input */
+    --bg-hover: #3a3b3c;
+    --text-main: #e4e6eb;       /* Off-white text */
+    --text-muted: #b0b3b8;
+    --primary: #8e7bf8;         /* Lighter purple for dark bg */
+    --secondary: #6c5ce7;
+    --gray-btn: #3a3b3c;        /* Dark btn background */
+
+    /* Person Colors - Darker/Desaturated for eye comfort */
+    --person-a-bg: #1e3a5f;     /* Navy Blue */
+    --person-b-bg: #4a2c58;     /* Deep Purple */
+    
+    --shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* Static SCSS Variables (For internal logic) */
 $danger-color: #ff7675;
 $danger-hover: #d63031;
-
-/* Font Variables */
 $font-main: 'Mali', cursive;   
 $font-ui: 'Prompt', sans-serif;
 
-/* 2. Global Resets & Fonts */
+/* =========================================
+   2. GLOBAL RESETS
+   ========================================= */
 * { 
     box-sizing: border-box; 
     margin: 0; 
     padding: 0; 
     font-family: $font-main; 
+    /* Smooth transition for theme switching */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; 
 }
 
 /* Ensure inputs/buttons inherit the correct font */
@@ -28,26 +66,28 @@ input, textarea, button, select {
 }
 
 body {
-    background-color: $bg-color;
-    color: $text;
+    background-color: var(--bg-body);
+    color: var(--text-main);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     padding: 20px;
 }
 
-/* Headers Font Override */
 h1, h2, h3 {
     font-family: $font-ui; 
+    color: var(--text-main);
 }
 
-/* 3. Main Layout */
+/* =========================================
+   3. APP CONTAINER & HEADER
+   ========================================= */
 .app-container {
     width: 100%;
     max-width: 900px;
-    background: $white;
+    background: var(--bg-card);
     border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
     padding: 30px;
     
     header {
@@ -55,7 +95,7 @@ h1, h2, h3 {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 30px;
-        h1 { color: $primary; font-size: 1.5rem; }
+        h1 { color: var(--primary); font-size: 1.5rem; }
     }
 }
 
@@ -64,7 +104,9 @@ h1, h2, h3 {
     gap: 10px;
 }
 
-/* 4. Buttons */
+/* =========================================
+   4. BUTTONS
+   ========================================= */
 button, .btn-secondary, .btn-primary, .btn-danger {
     cursor: pointer;
     border: none;
@@ -72,24 +114,153 @@ button, .btn-secondary, .btn-primary, .btn-danger {
     padding: 8px 16px;
     transition: 0.2s;
     font-size: 0.9rem;
-    font-family: $font-ui; /* Better readability for buttons */
+    font-family: $font-ui; 
 }
 
-.btn-secondary { background: $gray; color: $text; display: inline-flex; align-items: center; gap: 5px; }
-.btn-secondary:hover { background: darken($gray, 10%); }
+.btn-secondary { 
+    background: var(--gray-btn); 
+    color: var(--text-main); 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 5px; 
+    
+    &:hover { filter: brightness(0.9); }
+}
 
-.btn-primary { background: $primary; color: $white; font-weight: bold; }
-.btn-primary:hover { background: darken($primary, 10%); }
+.btn-primary { 
+    background: var(--primary); 
+    color: #ffffff; 
+    font-weight: bold; 
+    
+    &:hover { filter: brightness(1.1); }
+
+    /* Disabled State */
+    &:disabled {
+        background-color: #bdc3c7; 
+        cursor: not-allowed;      
+        transform: none;          
+        box-shadow: none;
+        opacity: 0.7;
+        
+        &:hover { background-color: #bdc3c7; }
+    }
+}
 
 .btn-danger {
     background: $danger-color;
     color: white;
     font-weight: bold;
-    display: inline-flex; align-items: center; gap: 5px;
+    display: inline-flex; 
+    align-items: center; 
+    gap: 5px;
+    
     &:hover { background: $danger-hover; }
 }
 
-/* 5. Calendar */
+/* Today Button Specifics */
+#todayBtn {
+    background: var(--bg-card);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    font-weight: bold;
+
+    &:hover {
+        background: var(--primary);
+        color: white;
+    }
+}
+
+/* =========================================
+   5. MEMORY SECTION
+   ========================================= */
+.memory-section {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    animation: fadeIn 0.5s ease-in-out;
+
+    .memory-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        
+        h3 { 
+            color: var(--primary); 
+            font-size: 1.1rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            
+            span { font-weight: normal; color: var(--text-main); font-size: 0.9rem; }
+        }
+    }
+
+    .memory-card {
+        display: flex;
+        gap: 15px;
+        @media (max-width: 600px) { flex-direction: column; }
+
+        .mem-person {
+            flex: 1;
+            /* Note: We use specific vars for memory cards */
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.9rem;
+
+            &.person-a { background: var(--person-a-bg); }
+            &.person-b { background: var(--person-b-bg); }
+
+            .mem-tag {
+                font-weight: bold;
+                margin-bottom: 8px;
+                color: var(--text-main);
+                font-size: 0.8rem;
+                opacity: 0.8;
+            }
+
+            p {
+                margin-bottom: 10px;
+                line-height: 1.5;
+                color: var(--text-main);
+                white-space: pre-wrap; 
+            }
+        }
+    }
+
+    .mem-imgs-grid {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto; 
+        padding-bottom: 5px;
+        
+        img {
+            height: 80px; 
+            width: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: 0.2s;
+            cursor: pointer;
+
+            &:hover { transform: scale(1.05); }
+        }
+
+        &::-webkit-scrollbar { height: 4px; }
+        &::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 2px; }
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   6. CALENDAR
+   ========================================= */
 .calendar-nav {
     display: flex;
     justify-content: space-between;
@@ -99,38 +270,38 @@ button, .btn-secondary, .btn-primary, .btn-danger {
     button { 
         background: transparent; 
         font-size: 1.2rem; 
-        color: $primary; 
+        color: var(--primary); 
         padding: 5px 10px;
-        
-        &:hover { background: rgba(0,0,0,0.05); border-radius: 50%; }
+        &:hover { background: var(--bg-hover); border-radius: 50%; }
     }
 
-    /* New Selector Styling */
     .nav-selectors {
         display: flex;
         gap: 10px;
 
         select {
-            appearance: none; /* Removes default ugly browser arrow */
+            appearance: none;
             border: none;
             background: transparent;
-            font-size: 1.5rem; /* Matches your old H2 size */
+            font-size: 1.5rem;
             font-weight: bold;
-            color: $text;
+            color: var(--text-main);
             cursor: pointer;
             padding: 5px 10px;
             border-radius: 8px;
-            font-family: $font-ui; /* Uses the clean Prompt font */
+            font-family: $font-ui;
             text-align: center;
 
-            &:hover {
-                background: rgba(0,0,0,0.05);
-                color: $primary;
-            }
-
-            &:focus {
+            &:hover, &:focus {
+                background: var(--bg-hover);
+                color: var(--primary);
                 outline: none;
-                background: rgba(0,0,0,0.05);
+            }
+            
+            /* Ensure dropdown options have correct background in dark mode */
+            option {
+                background: var(--bg-card);
+                color: var(--text-main);
             }
         }
     }
@@ -144,7 +315,8 @@ button, .btn-secondary, .btn-primary, .btn-danger {
     .day {
         aspect-ratio: 1;
         border-radius: 12px;
-        background: #f8f9fa;
+        background: var(--bg-hover);
+        color: var(--text-main);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -154,13 +326,15 @@ button, .btn-secondary, .btn-primary, .btn-danger {
         position: relative;
         font-weight: bold;
 
-        &:hover { background: $secondary; color: $white; }
-        &.today { border: 2px solid $primary; }
+        &:hover { background: var(--secondary); color: #fff; }
+        
+        &.today { border: 2px solid var(--primary); }
+        
         &.has-entry::after {
             content: '';
             width: 6px;
             height: 6px;
-            background: $primary;
+            background: var(--primary);
             border-radius: 50%;
             position: absolute;
             bottom: 8px;
@@ -169,7 +343,9 @@ button, .btn-secondary, .btn-primary, .btn-danger {
     }
 }
 
-/* 6. Modal & Diary Entry */
+/* =========================================
+   7. MODAL & DIARY ENTRY
+   ========================================= */
 .modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5);
@@ -182,11 +358,11 @@ button, .btn-secondary, .btn-primary, .btn-danger {
     &.active { display: flex; }
 
    .modal-content {
-        background: $white;
+        background: var(--bg-card);
+        color: var(--text-main);
         width: 90%;
         max-width: 900px;
         
-        /* Enables the main window scrolling */
         height: auto; 
         max-height: 90vh; 
         overflow-y: auto; 
@@ -196,7 +372,6 @@ button, .btn-secondary, .btn-primary, .btn-danger {
         display: flex;
         flex-direction: column;
 
-        /* Custom Scrollbar */
         &::-webkit-scrollbar { width: 8px; }
         &::-webkit-scrollbar-track { background: transparent; }
         &::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.1); border-radius: 4px; }
@@ -206,7 +381,12 @@ button, .btn-secondary, .btn-primary, .btn-danger {
         display: flex;
         justify-content: space-between;
         margin-bottom: 20px;
-        .close-btn { background: none; font-size: 1.5rem; }
+        .close-btn { 
+            background: none; 
+            font-size: 1.5rem; 
+            color: var(--text-main);
+            &:hover { color: $danger-color; }
+        }
     }
 
     .diary-split {
@@ -214,7 +394,7 @@ button, .btn-secondary, .btn-primary, .btn-danger {
         gap: 20px;
         height: auto; 
         margin-bottom: 20px;
-        align-items: stretch; /* Keeps bg colors even, but allows growth */
+        align-items: stretch; 
 
         @media (max-width: 600px) { flex-direction: column; }
 
@@ -228,27 +408,26 @@ button, .btn-secondary, .btn-primary, .btn-danger {
             height: auto; 
             min-height: 300px;
 
-            &.person-a { background: $person-a-color; }
-            &.person-b { background: $person-b-color; }
+            &.person-a { background: var(--person-a-bg); }
+            &.person-b { background: var(--person-b-bg); }
 
             .person-header {
                 font-weight: bold;
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                color: #555;
+                color: var(--text-main);
+                opacity: 0.8;
             }
 
-            /* --- TEXTAREA UPDATE --- */
             textarea {
                 width: 100%;
                 border: none;
-                background: rgba(255,255,255,0.6);
+                background: var(--bg-input);
+                color: var(--text-main);
                 padding: 15px;
                 border-radius: 12px;
                 
-                /* FIX: Remove flex:1 so it doesn't fight the auto-height. 
-                   Set resize to vertical so user can drag it down. */
                 height: auto;
                 min-height: 120px;
                 resize: vertical; 
@@ -257,11 +436,19 @@ button, .btn-secondary, .btn-primary, .btn-danger {
                 line-height: 1.6;
                 box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 
-                &:focus { outline: 2px solid $primary; }
+                &:focus { outline: 2px solid var(--primary); background: var(--bg-card); }
+                &::placeholder { color: var(--text-muted); }
             }
 
             .image-upload {
-                label { font-size: 0.8rem; cursor: pointer; color: #666; display: block; margin-bottom: 10px;}
+                label { 
+                    font-size: 0.8rem; 
+                    cursor: pointer; 
+                    color: var(--text-muted); 
+                    display: block; 
+                    margin-bottom: 10px;
+                    &:hover { color: var(--primary); }
+                }
             }
         }
     }
@@ -269,12 +456,14 @@ button, .btn-secondary, .btn-primary, .btn-danger {
     .modal-footer {
         padding-top: 20px;
         display: flex;
-        justify-content: space-between; /* Pushes Delete to left, Save to right */
+        justify-content: space-between; 
         align-items: center;
     }
 }
 
-/* 7. Masonry Grid (Images) */
+/* =========================================
+   8. MASONRY GRID (IMAGES)
+   ========================================= */
 .masonry-grid {
     column-count: 2; 
     column-gap: 10px;
@@ -314,21 +503,4 @@ button, .btn-secondary, .btn-primary, .btn-danger {
             &:hover { background: red; }
         }
     }
-}
-
-#todayBtn {
-    background: #ffffff;
-    border: 1px solid $primary;
-    color: $primary;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-
-    &:hover {
-        background: $primary;
-        color: white;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    i { margin-right: 5px; }
 }
